@@ -2,8 +2,8 @@
 
 fn main() {
 
-    let principle : u32 = 400000;
-    let int_rate  : f64 = 4.00;
+    let principle : u32 = 500000;
+    let int_rate  : f64 = 5.00;
     let _compounding_periods = 2;
     let _num_annl_payments = 12;
     let amortization_period = 25;
@@ -17,7 +17,7 @@ fn main() {
     println!("{}", mortgage_data.calc_monthly_payment());
     println!("");
 
-    // mortgage_data.gen_amortization_calendar();
+    mortgage_data.gen_amortization_calendar();
 
 }
 
@@ -45,23 +45,21 @@ impl Mortgage {
 
     pub fn calc_effective_rate(&self) -> f64 {
         let result : f64 = 1.0 + (self.int_rate)/self.compounding_periods;
-
         result.powf(self.compounding_periods) - 1.0
     }
 
-    fn calc_equivalent_rate(&self) -> f64 {
+    fn calc_periodic_rate(&self) -> f64 {
         let result : f64 = 1.0 + (self.int_rate/self.compounding_periods);
-        self.balance * (result.powf(self.compounding_periods/self.num_annual_payments) - 1.0)
+        result.powf(self.compounding_periods/self.num_annual_payments) - 1.0
     }
 
     pub fn calc_interest_payment(&self) -> f64 {
-        let result : f64 = 1.0 + (self.int_rate/self.compounding_periods);
-        self.balance * (result.powf(self.compounding_periods/self.num_annual_payments) - 1.0)
+        self.balance * self.calc_periodic_rate()
     }
 
     pub fn calc_monthly_payment(&self) -> f64 {
-        let eff_rate       : f64 = self.calc_effective_rate();
-        let periodic_rate  : f64 = eff_rate/12.0;
+        
+        let periodic_rate  : f64 = self.calc_periodic_rate();
         let total_payments : f64 = (self.num_annual_payments * self.amortization_period) as f64;
         let core_rate      : f64 = 1.0 + periodic_rate;
 
@@ -71,7 +69,7 @@ impl Mortgage {
         self.principle * numerator / denominator
     }
 
-    pub fn _gen_amortization_calendar(&mut self) {
+    pub fn gen_amortization_calendar(&mut self) {
         // 1. Calculate interest paid 
         // 2. calculate monthly payment
         // 3. determine amount paid off from principle
@@ -84,7 +82,7 @@ impl Mortgage {
         let mut principle_paid : f64;
 
         // for _ in 1..total_payments {
-        for _ in 1..12 {
+        for _ in 1..=12 {
             interest_amt = self.calc_interest_payment();
             payment_amt = self.calc_monthly_payment();
             principle_paid = payment_amt - interest_amt;
