@@ -30,8 +30,7 @@ impl Mortgage {
         let compounding_periods = 2;
         let num_annual_payments = 12;
 
-        Mortgage { 
-                   start_date          : start_date,
+        Mortgage { start_date          : start_date,
                    principle           : principle as f64,  
                    balance             : principle as f64,  
                    int_rate            : rate/100.0, 
@@ -72,12 +71,12 @@ impl Mortgage {
         // 3. determine amount paid off from principle
         // 4. update principle amount
 
-        // let total_payments = (self.num_annual_payments * self.amortization_period) as u32;
-        // let mut outstanding_amt = self.principle;
         let mut interest_amt : f64;
         let mut payment_amt : f64;
         let mut principle_paid : f64;
 
+        println!("{:<15} | {:<15} | {:<15} | {:<15}", "Interest Amount", "Payment Amount", "Principle Paid", "Balance");
+        println!("{:-<65}", "");
         // for _ in 1..total_payments {
         for _ in 1..=12 {
             interest_amt = self.calc_interest_payment();
@@ -86,7 +85,7 @@ impl Mortgage {
 
             self.balance = self.balance - principle_paid;
 
-            println!("{} {} {} {}", interest_amt, payment_amt, principle_paid, self.balance)
+            println!("{:<15.2} | {:<15.2} | {:<15.2} | {:<15.2}", interest_amt, payment_amt, principle_paid, self.balance)
 
         }
     }
